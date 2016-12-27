@@ -56,8 +56,8 @@ module.exports = React.createClass
       div style: styleBody,
         renderEntry router, 'About', 'index.html'
         renderEntry router, 'Guide', 'guide.html'
+        renderEntry router, 'Elements', 'elements.html'
+        renderEntry router, 'Component', 'component.html'
         renderEntry router, 'API', 'api.html'
-        renderEntry router, 'Debugger', 'debugger.html'
         renderEntry router, 'Philosophy', 'philosophy.html'
-        renderEntry router, 'Router', 'router.html'
         renderEntry router, 'History', 'history.html'

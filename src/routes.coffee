@@ -7,6 +7,6 @@ module.exports = Immutable.fromJS
   'guide.html': []
   'api.html': []
   'philosophy.html': []
-  'router.html': []
   'history.html': []
-  'debugger.html': []
+  'component.html': []
+  'elements.html': []

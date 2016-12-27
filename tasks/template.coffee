@@ -29,7 +29,7 @@ module.exports = (env, path) ->
   stir.render stir.doctype,
     html {},
       head {},
-        title {}, 'Actions in Recorder docs'
+        title {}, 'Quamolit'
         meta charset: 'utf-8'
         link rel: 'icon', href: logoUrl
         if assets.style?

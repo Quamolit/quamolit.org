@@ -15,7 +15,7 @@ gulp.task 'rsync', (cb) ->
     src: [ 'build/*' ]
     recursive: true
     args: [ '--verbose' ]
-    dest: 'repo.tiye.me:~/repo/mvc-works/recorder-docs/'
+    dest: 'quamolit.org:~/repo/Quamolit/quamolit.org/'
     deleteAll: true
   , (error, stdout, stderr, cmd) ->
     if error != null
@@ -35,8 +35,8 @@ gulp.task 'html', (cb) ->
   html = require('./tasks/template')
   fs = require('fs')
   pages = [
-    'index.html', 'about.html', 'guide.html', 'debugger.html',
-    'api.html', 'philosophy.html', 'router.html', 'history.html'
+    'index.html', 'about.html', 'guide.html', 'elements.html',
+    'api.html', 'philosophy.html', 'components.html', 'history.html'
   ]
   pages.forEach (page) ->
     fs.writeFileSync "build/#{page}", html(env, page)

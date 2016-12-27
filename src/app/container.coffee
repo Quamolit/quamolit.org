@@ -51,7 +51,7 @@ module.exports = React.createClass
 
     div className: 'app-container', style: styleContainer,
       div style: styleHeader,
-        span style: styleLogo, 'Actions in Recorder'
+        span style: styleLogo, 'Quamolit'
         a href: repoUrl, target: '_blank', 'GitHub'
       div style: styleBody,
         Sidebar router: router
