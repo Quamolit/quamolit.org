@@ -4,6 +4,8 @@ What is Quamolit?
 
 > Quamolit is a declarative library for canvas animations. It's built with ClojureScript and by learning from React.
 
+Demo http://repo.quamolit.org/quamolit/
+
 ### What's the problem?
 
 Seeing from MVC, animations has Models too. Said by FRP(Functional Reactive Programming), the Model for animations is values changing over time, like a stream. It does have a Model, a Model for animations. But we want to program in a declarative way, which means we need that Model to be generated from our code. Meanwhile CSS animations is not we want because of the private animation states, we need global app state. So question, how to expression a time varying Model with declarative code?
