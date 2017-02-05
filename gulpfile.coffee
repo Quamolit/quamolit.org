@@ -36,7 +36,7 @@ gulp.task 'html', (cb) ->
   fs = require('fs')
   pages = [
     'index.html', 'about.html', 'guide.html', 'elements.html',
-    'api.html', 'philosophy.html', 'components.html', 'history.html'
+    'api.html', 'philosophy.html', 'component.html', 'history.html'
   ]
   pages.forEach (page) ->
     fs.writeFileSync "build/#{page}", html(env, page)

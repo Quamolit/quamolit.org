@@ -41,7 +41,7 @@ styleBody =
   flex: 1
   overflow: 'hidden'
 
-repoUrl = 'https://github.com/mvc-works/actions-in-recorder'
+repoUrl = 'https://github.com/Quamolit/quamolit'
 
 module.exports = React.createClass
   displayName: 'app-container'

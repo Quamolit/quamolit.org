@@ -26,10 +26,10 @@ Component is defined in a record with a bunch of functions.
 In most cases you only need to define some of the functions. With Clojure you only need arity overloading:
 
 ```clojure
-(create-comp :demo                                                                         render)
-(create-comp :demo init-state update-state                                                 render)
-(create-comp :demo                         init-instant on-tick on-update on-mount remove? render)
-(create-comp :demo init-state update-state init-instant on-tick on-update on-mount remove? render)
+(create-comp :demo                                                                           render)
+(create-comp :demo init-state update-state                                                   render)
+(create-comp :demo                         init-instant on-tick on-update on-unmount remove? render)
+(create-comp :demo init-state update-state init-instant on-tick on-update on-unmount remove? render)
 ```
 
 The functions are are like:
