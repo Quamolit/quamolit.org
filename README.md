@@ -1,14 +1,12 @@
 
-Docs for Quamolit project
+Quamolit Home
 ----
 
-> Docs for https://github.com/Quamolit/quamolit
+> Home page for Quamolit project
 
-Read online http://quamolit.org/
+### Workflow
 
-### Project Template
-
-https://github.com/react-china/coffee-workflow
+Workflow https://github.com/mvc-works/calcit-workflow
 
 ### License
 
