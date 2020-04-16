@@ -4,7 +4,7 @@
             [respo-ui.core :as ui]
             [respo.core
              :refer
-             [defcomp defeffect list-> cursor-> <> div button textarea span input img a]]
+             [defcomp defeffect list-> >> <> div button textarea span input img a]]
             [respo.comp.space :refer [=<]]
             [reel.comp.reel :refer [comp-reel]]
             [respo-md.comp.md :refer [comp-md]]
@@ -34,7 +34,11 @@
    {:name "Quatrefoil",
     :intro "Experimental Virtual DOM library on top of three.js",
     :repo "https://github.com/Quamolit/quatrefoil",
-    :demo "http://repo.quamolit.org/quatrefoil/"}])
+    :demo "http://repo.quamolit.org/quatrefoil/"}
+   {:name "Axis",
+    :intro "Axis for curves",
+    :repo "https://github.com/Quamolit/axis",
+    :demo "http://repo.quamolit.org/axis/"}])
 
 (defcomp
  comp-container
@@ -77,4 +81,4 @@
      (<> "Find out more on GitHub ")
      (a {:href "http://github.com/Quamolit/", :inner-text "Quamolit"})
      (<> "."))
-    (when dev? (cursor-> :reel comp-reel states reel {})))))
+    (when dev? (comp-reel (>> states :reel) reel {})))))
