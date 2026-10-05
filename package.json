@@ -1,18 +1,17 @@
 {
-  "name": "calcit-workflow",
+  "name": "quamolit-home",
   "version": "0.1.0",
-  "description": "ClojureScript workflow using Calcit Editor",
+  "description": "Quamolit project home page",
   "main": "index.js",
   "packageManager": "yarn@4.12.0",
   "scripts": {
-    "ln": "cd target && rm -f entry && ln -s ../entry",
-    "compile": "cr js",
+    "compile": "calcit calcit.cirru js",
     "build": "vite build --base=./",
     "dev": "vite"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:mvc-works/calcit-workflow.git"
+    "url": "git@github.com:Quamolit/quamolit.org.git"
   },
   "author": "jiyinyiyong",
   "license": "MIT",
@@ -20,7 +19,7 @@
     "vite": "^8.0.16"
   },
   "dependencies": {
-    "@calcit/procs": "^0.12.14",
+    "@calcit/procs": "0.28.0",
     "feather-icons": "^4.29.1"
   }
 }
