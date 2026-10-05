@@ -5,7 +5,7 @@
   :entries $ {} $ :default
     {} (:description |) (:init-fn 'app.main/main!) (:mode :js) (:reload-fn 'app.main/reload!) (:target :browser)
       :feature-policy $ {}
-      :modules $ [] |respo.calcit/ |memof/ |respo-ui.calcit/ |reel.calcit/
+      :modules $ [] |respo.calcit/ |memof/ |respo-ui.calcit/ |reel.calcit/ |js-ffi/
       :type-slots $ {} $ :dispatch-op |app.schema/Op
   :files $ {}
     'app.comp.container $ %{} 'FileEntry
@@ -22,7 +22,8 @@
               div
                 {} $ :style $ merge ui/global
                   {} $ :padding 40
-                img $ {} (:src |http://cdn.tiye.me/logo/quamolit.png) (:width 280)
+                img $ {} (:src |http://cdn.tiye.me/logo/quamolit.png)
+                  :style $ {} $ :width 280
                 div
                   {} $ :style $ {} (:margin "|40px 0")
                   <> "|Quamolit Project - interactive Web graphics with transitions" $ {} (:font-family ui/font-fancy) (:font-size 24) (:font-weight 300)
@@ -30,6 +31,9 @@
                   {} $ :style $ {} (:font-size 16)
                   , & $ -> projects $ map
                     fn (info)
+                      hint-fn $ {}
+                        :args $ [] 'Project
+                        :return 'respo.schema/Element
                       div
                         {}
                           :style $ merge ui/row $ {} (:padding 8)
@@ -52,8 +56,11 @@
                 div ({}) (<> "|Find out more on GitHub ")
                   a $ {} (:href |http://github.com/Quamolit/) (:inner-text |Quamolit)
                   <> |.
-                when dev? $ comp-reel (>> states :reel) reel $ {}
+                when dev? $ comp-typed-reel (>> states :reel) reel $ {}
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'respo.schema/Component)
+            :args $ [] $ :: 'reel.typed/State 'app.schema/Op 'app.schema/Store
+            :features $ #{} :js-ffi
         'projects $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def projects
             []
@@ -74,29 +81,24 @@
           :schema $ :: 'List 'Project
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.comp.container
-          :require
-            respo.util.format :refer $ hsl
-            respo-ui.core :as ui
-            respo.core :refer $ defcomp defeffect list-> >> <> div button textarea span input img a
+          :require (respo-ui.core :as ui)
+            respo.core :refer $ defcomp >> <> div img a
             respo.comp.space :refer $ =<
-            reel.comp.reel :refer $ comp-reel
+            reel.comp.reel :refer $ comp-typed-reel
+            app.schema :as schema
             app.config :refer $ dev?
     'app.config $ %{} 'FileEntry
       :defs $ {}
-        'cdn? $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ def cdn?
-            cond
-                exists? js/window
-                , false
-              (exists? js/process) (= |true js/process.env.cdn)
-              :else false
+        'Site $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defstruct Site (:dev-ui 'String) (:release-ui 'String) (:cdn-url 'String) (:title 'String) (:icon 'String) (:storage-key 'String)
           :examples $ []
+          :schema $ :: 'StructDef
         'dev? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def dev? true
           :examples $ []
         'site $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def site
-            {} (:dev-ui |http://localhost:8100/main-fonts.css) (:release-ui |http://cdn.tiye.me/favored-fonts/main-fonts.css) (:cdn-url |http://cdn.tiye.me/quamolit.org/) (:title |Quamolit) (:icon |http://cdn.tiye.me/logo/quamolit.png) (:storage-key |quamolit.org)
+            %{} Site (:dev-ui |http://localhost:8100/main-fonts.css) (:release-ui |http://cdn.tiye.me/favored-fonts/main-fonts.css) (:cdn-url |http://cdn.tiye.me/quamolit.org/) (:title |Quamolit) (:icon |http://cdn.tiye.me/logo/quamolit.png) (:storage-key |quamolit.org)
           :examples $ []
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.config
@@ -104,59 +106,88 @@
       :defs $ {}
         '*reel $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defatom *reel
-            -> reel-schema/reel (assoc :base schema/store) (assoc :store schema/store)
+            assert-type (typed/new-reel schema/store) (:: 'reel.typed/State 'app.schema/Op 'app.schema/Store)
           :examples $ []
+          :schema $ :: 'Ref $ :: 'reel.typed/State 'app.schema/Op 'app.schema/Store
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when config/dev? $ println |Dispatch: op
-            reset! *reel $ reel-updater updater @*reel op
+            if (enum? op)
+              match (typed/decode-control op)
+                (:some control)
+                  reset! *reel $ typed/apply-control updater @*reel control
+                (:none)
+                  match (schema/decode-op op)
+                    (:some action)
+                      reset! *reel $ typed/record-op updater @*reel action (generate-id!) (now-ms)
+                    (:none) (eprintln "|Unknown op:" op)
+              eprintln "|Unknown op:" op
+            , &unit
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Unit)
+            :args $ [] 'Dynamic
+            :features $ #{} :js-ffi
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
-            if ssr? $ render-app! realize-ssr!
+            if (ssr?) (render-app! realize-ssr!)
             render-app! render!
             add-watch *reel :changes $ fn (reel prev) (render-app! render!)
             listen-devtools! |a dispatch!
-            js/window.addEventListener |beforeunload persist-storage!
-            flipped js/setInterval 60000 persist-storage!
-            ; let
-              (raw (js/localStorage.getItem (:storage-key config/site)))
-              when (some? raw)
-                dispatch! $ :: :hydrate-storage $ extract-cirru-edn (js/JSON.parse raw)
+            browser/add-event-listener! |beforeunload $ fn (event)
+              hint-fn $ {}
+                :args $ [] 'js-ffi.browser/EventHost
+                :return 'Unit
+                :features $ #{} :js-ffi
+              persist-storage!
+            browser/set-interval! persist-storage! 60000
             println "|App started."
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Unit)
+            :args $ []
+            :features $ #{} :js-ffi
         'mount-target $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ def mount-target (js/document.querySelector |.app)
+          :code $ quote $ defn mount-target ()
+            option:unwrap $ browser/query-selector |.app
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'js-ffi.browser/DomElementHost)
+            :args $ []
+            :features $ #{} :js-ffi
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn persist-storage! ()
-            js/localStorage.setItem (:storage-key config/site)
-              js/JSON.stringify $ to-cirru-edn $ :store @*reel
+            browser/storage-set! (:storage-key config/site)
+              json-stringify $ to-cirru-edn $ :store @*reel
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Unit)
+            :args $ []
+            :features $ #{} :js-ffi
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (clear-cache!)
-            reset! *reel $ refresh-reel @*reel schema/store updater
+            reset! *reel $ typed/refresh updater @*reel schema/store
             println "|Code updated."
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Unit)
+            :args $ []
+            :features $ #{} :js-ffi
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! (renderer)
-            renderer mount-target (comp-container @*reel) dispatch!
+            renderer (mount-target) (comp-container @*reel) dispatch!
           :examples $ []
-        'repeat! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn repeat! (duration cb)
-            js/setTimeout
-              fn () (cb)
-                repeat! (* 1000 duration) cb
-              * 1000 duration
-          :examples $ []
-        'snippets $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn snippets () (println config/cdn?)
-          :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Unit)
+            :args $ [] $ :: 'Fn
+              {} (:return 'Unit)
+                :args $ [] 'Dynamic 'respo.schema/Component $ :: 'Fn
+                  {} (:return 'Unit)
+                    :args $ [] 'Dynamic
+                :features $ #{} :js-ffi
+            :features $ #{} :js-ffi
         'ssr? $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ def ssr?
-            some? $ js/document.querySelector |meta.respo-ssr
+          :code $ quote $ defn ssr? ()
+            option:some? $ browser/query-selector |meta.respo-ssr
           :examples $ []
+          :schema $ :: 'Fn $ {} (:return 'Bool)
+            :args $ []
+            :features $ #{} :js-ffi
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.main
           :require
@@ -165,9 +196,10 @@
             app.updater :refer $ updater
             app.schema :as schema
             reel.util :refer $ listen-devtools!
-            reel.core :refer $ reel-updater refresh-reel
-            reel.schema :as reel-schema
             app.config :as config
+            reel.typed :as typed
+            js-ffi.browser :as browser
+            js-ffi.shared :refer $ now-ms
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Op $ %{} 'CodeEntry (:doc |)
@@ -183,6 +215,32 @@
             :content 'String
           :examples $ []
           :schema $ :: 'StructDef
+        'decode-op $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn decode-op (op)
+            match op
+              (:states cursor data)
+                if (list? cursor)
+                  Option :some $ %:: Op :states
+                    map cursor $ fn (item)
+                      hint-fn $ {}
+                        :args $ [] 'Dynamic
+                        :return 'Tag
+                      if (tag? item) item $ raise "|State cursor must contain tags"
+                    , data
+                  Option :none
+              (:content value)
+                if (string? value)
+                  Option :some $ %:: Op :content value
+                  Option :none
+              (:hydrate-storage value)
+                if (&struct:matches? value Store)
+                  Option :some $ %:: Op :hydrate-storage $ assert-type value 'Store
+                  Option :none
+              _ $ Option :none
+          :examples $ []
+          :schema $ :: 'Fn $ {}
+            :args $ [] 'Enum
+            :return $ :: 'Option 'app.schema/Op
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
             %{} Store
