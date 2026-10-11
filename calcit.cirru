@@ -79,6 +79,11 @@
               %{} Project (:name |Axis) (:intro "|Axis for curves") (:repo |https://github.com/Quamolit/axis) (:demo |http://repo.quamolit.org/axis/)
           :examples $ []
           :schema $ :: 'List 'Project
+          :tests $ [] $ %{} 'TestEntry (:name |preserves-project-directory)
+            :code $ quote $ do
+              assert= 7 $ count projects
+              assert= |Quamolit $ :name $ .unwrap (first projects)
+              assert= |http://repo.quamolit.org/axis/ $ :demo $ .unwrap (last projects)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.comp.container
           :require (respo-ui.core :as ui)
@@ -112,27 +117,25 @@
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when config/dev? $ println |Dispatch: op
-            if (enum? op)
-              match (typed/decode-control op)
-                (:some control)
-                  reset! *reel $ typed/apply-control updater @*reel control
-                (:none)
-                  match (schema/decode-op op)
-                    (:some action)
-                      reset! *reel $ typed/record-op updater @*reel action (generate-id!) (now-ms)
-                    (:none) (eprintln "|Unknown op:" op)
-              eprintln "|Unknown op:" op
+            match (typed/decode-control op)
+              (:some control)
+                reset! *reel $ typed/apply-control updater @*reel control
+              (:none)
+                match (schema/decode-op op)
+                  (:some action)
+                    reset! *reel $ typed/record-op updater @*reel action (generate-id!) (now-ms)
+                  (:none) (eprintln "|Unknown op:" op)
             , &unit
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ [] 'Dynamic
+            :args $ [] 'Enum
             :features $ #{} :js-ffi
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
             if (ssr?) (render-app! realize-ssr!)
             render-app! render!
-            add-watch *reel :changes $ fn (reel prev) (render-app! render!)
+            add-watch! *reel :changes $ fn (reel prev) (render-app! render!)
             listen-devtools! |a dispatch!
             browser/add-event-listener! |beforeunload $ fn (event)
               hint-fn $ {}
@@ -148,9 +151,9 @@
             :features $ #{} :js-ffi
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn mount-target ()
-            option:unwrap $ browser/query-selector |.app
+            narrow-element $ option:unwrap $ browser/query-selector |.app
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'js-ffi.browser/DomElementHost)
+          :schema $ :: 'Fn $ {} (:return 'respo.dom/DomElement)
             :args $ []
             :features $ #{} :js-ffi
         'persist-storage! $ %{} 'CodeEntry (:doc |)
@@ -176,9 +179,9 @@
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ [] $ :: 'Fn
               {} (:return 'Unit)
-                :args $ [] 'Dynamic 'respo.schema/Component $ :: 'Fn
+                :args $ [] (:: 'JsNullish 'respo.dom/DomElement) 'respo.schema/Component $ :: 'Fn
                   {} (:return 'Unit)
-                    :args $ [] 'Dynamic
+                    :args $ [] 'Enum
                 :features $ #{} :js-ffi
             :features $ #{} :js-ffi
         'ssr? $ %{} 'CodeEntry (:doc |)
@@ -200,6 +203,7 @@
             reel.typed :as typed
             js-ffi.browser :as browser
             js-ffi.shared :refer $ now-ms
+            respo.ffi.browser :refer $ narrow-element
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Op $ %{} 'CodeEntry (:doc |)
@@ -263,6 +267,11 @@
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Store)
             :args $ [] 'Store 'Op 'String 'Number
+          :tests $ [] $ %{} 'TestEntry (:name |preserves-content-and-hydration)
+            :code $ quote $ let
+                changed $ updater store (%:: Op :content |updated) |op-1 1
+              assert= |updated $ :content changed
+              assert= changed $ updater store (%:: Op :hydrate-storage changed) |op-2 2
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
-          :require $ app.schema :refer $ Store Op
+          :require $ app.schema :refer $ Store Op store
