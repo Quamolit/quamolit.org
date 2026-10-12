@@ -31,7 +31,7 @@ jobs:
       with:
         tools: calcit,caps
         caps-version: "0.1.1"
-        version: "0.29.0"
+        version: "0.29.1"
 
     - name: 安装依赖并检查类型
       run: |

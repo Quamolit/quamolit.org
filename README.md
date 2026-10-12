@@ -5,7 +5,8 @@ Quamolit Home
 
 ### Development
 
-使用正式 Calcit / `@calcit/procs` 0.29.0、caps 0.1.1、Node.js 24 和 Yarn 4.18。
+使用正式 Calcit / `@calcit/procs` 0.29.1、caps 0.1.1、Node.js 24 和 Yarn 4.18。
+模块固定为 Respo 0.16.116、UI 0.7.35、Reel 0.6.35、Memof 0.0.38 和 js-ffi 0.2.1。
 源码与依赖分别由 `calcit.cirru`、`deps.cirru` 管理，不再维护 `compact.cirru`。
 项目列表使用 `Project`，应用状态与操作使用 `Store` / `Op`，历史使用泛型 Reel
 `State<Op,Store>` 和模块自带的 `comp-typed-reel`。项目链接与 Logo 宽度保持不变。
