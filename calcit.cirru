@@ -161,7 +161,7 @@
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn persist-storage! ()
             browser/storage-set! (:storage-key config/site)
-              json-stringify $ to-cirru-edn $ :store @*reel
+              json-stringify $ to-calcit-data $ to-cirru-edn (:store @*reel)
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ []

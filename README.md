@@ -24,6 +24,9 @@ yarn dev
 
 开发时另开终端运行 `calcit -w`。生产构建运行 `yarn compile && yarn build`。
 访问 `?mode=dev` 后，Shift + Alt + Command + A 可切换 Reel 调试面板。
+持久化保留原 JSON/Cirru 数组格式；`to-cirru-edn` 的 JS 数组先经
+`to-calcit-data` 转换，再传给只接受 Calcit 数据的 `json-stringify`。
+已复验生产页面、面板开关和刷新卸载；原有缺少环境变量 mode 的提示仍保留。
 
 ### Frontend deployment
 
