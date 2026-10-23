@@ -48,7 +48,7 @@ const decoder=get('app.schema/decode-op'),hydrate=decoder.code[3][4];
 assert.deepEqual(hydrate,[[':hydrate-storage','value'],['if',['&struct:matches?','value','Store'],
   ['Option',':some',['Op',':hydrate-storage',['assert-type','value',"'Store"]]],['Option',':none']]]);
 hydrate[1]=['if',['struct?','value'],['if',['&struct:matches?','value','Store'],
-  ['Option',':some',['Op',':hydrate-storage',['decode-map-as','value',"'Store"]]],['Option',':none']],['Option',':none']];
+  ['Option',':some',['Op',':hydrate-storage','value']],['Option',':none']],['Option',':none']];
 const mount=get('app.main/mount-target');
 assert.deepEqual(mount.code[3],['narrow-element',['.unwrap',['browser/query-selector','|.app']]]);
 mount.code[3]=['.unwrap',['respo-browser/query-selector','|.app']];
