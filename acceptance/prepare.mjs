@@ -32,6 +32,14 @@ function normalize(node){
 for(const d of expected){d.code=normalize(d.code);d.tests=d.tests.map(t=>({...t,code:normalize(t.code)}));}
 assert.deepEqual(counts,{option:2,merge:2,concat:1,struct:9,enum:5});
 const get=id=>expected.find(d=>d.id===id);
+const updater=get('app.updater/updater');
+const stateWrite=updater.code[3][2][1];
+assert.deepEqual(stateWrite,['assoc','store',':states',['assoc-in',[':states','store'],['.concat','cursor',['[]',':data']],'s']]);
+stateWrite[3]=['decode-map-as',stateWrite[3],['::',"'Map","'Tag","'Dynamic"]];
+assert.equal(updater.tests.length,1);
+assert.equal(updater.tests[0].name,'preserves-content-and-hydration');
+updater.tests[0].code.push(['assert=', ['{}', [':panel',['{}',[':data','|checked-state']]]],
+  [':states',['updater','store',['Op',':states',['[]',':panel'],'|checked-state'],'|op-3','3']]]);
 const mount=get('app.main/mount-target');
 assert.deepEqual(mount.code[3],['narrow-element',['.unwrap',['browser/query-selector','|.app']]]);
 mount.code[3]=['.unwrap',['respo-browser/query-selector','|.app']];
@@ -70,7 +78,7 @@ const args=['edit','transaction','--file','acceptance/operations.json','--format
 const preview=JSON.parse(run(...args,'--dry-run'));assert.ok(preview.scoped_revision);
 writeFileSync('acceptance/preview.json',JSON.stringify(preview,null,2));
 writeFileSync('acceptance/applied.json',run(...args,'--expect-revision',preview.scoped_revision));
-assert.deepEqual(inventory(),expected,'All21views preserve project URLs/logo280/store/JSON-Cirru archive/SSR/control/updater/HMR and2testnames/assertions exceptreviewed19forms+checkedrenderboundary');
+assert.deepEqual(inventory(),expected,'All21views preserve project URLs/logo280/store/JSON-Cirru archive/SSR/control/updater/HMR and2testnames/originalassertions exceptreviewed19forms+checkedrenderandstatewriteboundaries+onepositiveassertion');
 assert.deepEqual(q('config'),configAfter);assert.deepEqual(q('ns','app.main'),nsAfter);
 writeFileSync('acceptance/after.json',JSON.stringify(expected,null,2));
 writeFileSync('acceptance/preserved.json',JSON.stringify({definitions:21,namespaces:6,tests:2,examples:0,...counts,projectsAndOriginalAssertionsPreserved:true,dispatchBusinessEnumUnchanged:true,rendererDynamicInputActuallyChecked:true,mountTargetNonNullable:true,unusedMemofRemoved:true,entrySlotUnchanged:true},null,2));
