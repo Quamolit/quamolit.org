@@ -40,6 +40,15 @@ assert.equal(updater.tests.length,1);
 assert.equal(updater.tests[0].name,'preserves-content-and-hydration');
 updater.tests[0].code.push(['assert=', ['{}', [':panel',['{}',[':data','|checked-state']]]],
   [':states',['updater','store',['Op',':states',['[]',':panel'],'|checked-state'],'|op-3','3']]]);
+const reel=get('app.main/*reel');
+assert.deepEqual(reel.code,['defref','*reel',['assert-type',['typed/new-reel','schema/store'],['::',"'reel.typed/State","'app.schema/Op","'app.schema/Store"]]]);
+reel.code=['defref','*reel',['typed/State',':base','schema/store',':store','schema/store',':records',['[]'],
+  ':pointer',['Option',':none'],':stopped?','false',':display?','false',':merged?','false']];
+const decoder=get('app.schema/decode-op'),hydrate=decoder.code[3][4];
+assert.deepEqual(hydrate,[[':hydrate-storage','value'],['if',['&struct:matches?','value','Store'],
+  ['Option',':some',['Op',':hydrate-storage',['assert-type','value',"'Store"]]],['Option',':none']]]);
+hydrate[1]=['if',['struct?','value'],['if',['&struct:matches?','value','Store'],
+  ['Option',':some',['Op',':hydrate-storage',['decode-map-as','value',"'Store"]]],['Option',':none']],['Option',':none']];
 const mount=get('app.main/mount-target');
 assert.deepEqual(mount.code[3],['narrow-element',['.unwrap',['browser/query-selector','|.app']]]);
 mount.code[3]=['.unwrap',['respo-browser/query-selector','|.app']];
