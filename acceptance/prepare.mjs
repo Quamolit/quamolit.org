@@ -38,7 +38,7 @@ assert.deepEqual(stateWrite,['assoc','store',':states',['assoc-in',[':states','s
 stateWrite[3]=['decode-map-as',stateWrite[3],['::',"'Map","'Tag","'Dynamic"]];
 assert.equal(updater.tests.length,1);
 assert.equal(updater.tests[0].name,'preserves-content-and-hydration');
-updater.tests[0].code.push(['assert=', ['{}', [':panel',['{}',[':data','|checked-state']]]],
+updater.tests[0].code.push(['assert=', ['{}', [':cursor',['[]']], [':panel',['{}',[':data','|checked-state']]]],
   [':states',['updater','store',['Op',':states',['[]',':panel'],'|checked-state'],'|op-3','3']]]);
 const reel=get('app.main/*reel');
 assert.deepEqual(reel.code,['defref','*reel',['assert-type',['typed/new-reel','schema/store'],['::',"'reel.typed/State","'app.schema/Op","'app.schema/Store"]]]);
