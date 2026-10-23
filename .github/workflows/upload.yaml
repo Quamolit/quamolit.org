@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - prepare/quamolit-home-formal031
   pull_request: {}
 
 permissions:
@@ -31,7 +32,7 @@ jobs:
       with:
         tools: calcit,caps
         caps-version: "0.1.1"
-        version: "0.29.1"
+        deps-file: deps.cirru
 
     - name: 安装依赖并检查类型
       run: |
@@ -39,7 +40,11 @@ jobs:
         caps --strict --ci
         yarn install --immutable
         caps verify --toolchain
+        node acceptance/prepare.mjs
+        calcit calcit.cirru edit format
+        test "$(git hash-object calcit.cirru)" = "$(cat acceptance/snapshot-blob.txt)"
         calcit --check-only --all-defs
+        calcit fix --workflow strict --verify --format json | jq -e 'if .data.workflow.status == "passed" and .diagnostics == [] then true else ., false end'
         calcit test --require-match
         calcit analyze weak-types --only deprecated-call --summary-only --format json | jq -e '.data.summary.calls == 0'
 
@@ -58,7 +63,7 @@ jobs:
         yarn vite build --base="$base_url"
 
     - name: 上传前端资源并校验公开访问
-      if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+      if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
       timeout-minutes: 10
       uses: worktools/cos-upload-action@06d6027dcca6413c5936e04a9b6e9f0d5ef71ba0 # v1.2.0
       with:
@@ -81,3 +86,16 @@ jobs:
         ssh_options: ''
         src: 'dist/*'
         dest: 'rsync-user@tiye.me:/web-assets/repo/${{ github.repository }}'
+
+    - name: Preserve prepared source and frontend bundle
+      if: always()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+      with:
+        name: quamolit-home-prepared
+        path: |
+          calcit.cirru
+          acceptance/
+          js-out/
+          dist/
+        if-no-files-found: error
+        retention-days: 7

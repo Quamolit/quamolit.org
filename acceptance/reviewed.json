@@ -1,0 +1,1743 @@
+[
+  {
+    "code": [
+      "def",
+      "calcit-dirname",
+      "|"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.$meta/calcit-dirname",
+    "js_ffi": null,
+    "schema": null,
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "calcit-filename",
+      "|calcit.cirru"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.$meta/calcit-filename",
+    "js_ffi": null,
+    "schema": null,
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defstruct",
+      "Project",
+      [
+        ":name",
+        "'String"
+      ],
+      [
+        ":intro",
+        "'String"
+      ],
+      [
+        ":repo",
+        "'String"
+      ],
+      [
+        ":demo",
+        "'String"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.comp.container/Project",
+    "js_ffi": null,
+    "schema": "'StructDef",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defcomp",
+      "comp-container",
+      [
+        "reel"
+      ],
+      [
+        "let",
+        [
+          [
+            "store",
+            [
+              ":store",
+              "reel"
+            ]
+          ],
+          [
+            "states",
+            [
+              ":states",
+              "store"
+            ]
+          ]
+        ],
+        [
+          "div",
+          [
+            "{}",
+            [
+              ":style",
+              [
+                "merge",
+                "ui/global",
+                [
+                  "{}",
+                  [
+                    ":padding",
+                    "40"
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "img",
+            [
+              "{}",
+              [
+                ":src",
+                "|http://cdn.tiye.me/logo/quamolit.png"
+              ],
+              [
+                ":style",
+                [
+                  "{}",
+                  [
+                    ":width",
+                    "280"
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "div",
+            [
+              "{}",
+              [
+                ":style",
+                [
+                  "{}",
+                  [
+                    ":margin",
+                    "|40px 0"
+                  ]
+                ]
+              ]
+            ],
+            [
+              "<>",
+              "|Quamolit Project - interactive Web graphics with transitions",
+              [
+                "{}",
+                [
+                  ":font-family",
+                  "ui/font-fancy"
+                ],
+                [
+                  ":font-size",
+                  "24"
+                ],
+                [
+                  ":font-weight",
+                  "300"
+                ]
+              ]
+            ]
+          ],
+          [
+            "div",
+            [
+              "{}",
+              [
+                ":style",
+                [
+                  "{}",
+                  [
+                    ":font-size",
+                    "16"
+                  ]
+                ]
+              ]
+            ],
+            "&",
+            [
+              "->",
+              "projects",
+              [
+                "map",
+                [
+                  "fn",
+                  [
+                    "info"
+                  ],
+                  [
+                    "hint-fn",
+                    [
+                      "{}",
+                      [
+                        ":args",
+                        [
+                          "[]",
+                          "'Project"
+                        ]
+                      ],
+                      [
+                        ":return",
+                        "'respo.schema/Element"
+                      ]
+                    ]
+                  ],
+                  [
+                    "div",
+                    [
+                      "{}",
+                      [
+                        ":style",
+                        [
+                          "merge",
+                          "ui/row",
+                          [
+                            "{}",
+                            [
+                              ":padding",
+                              "8"
+                            ]
+                          ]
+                        ]
+                      ],
+                      [
+                        ":class-name",
+                        "|hover-item"
+                      ]
+                    ],
+                    [
+                      "a",
+                      [
+                        "{}",
+                        [
+                          ":style",
+                          [
+                            "{}",
+                            [
+                              ":width",
+                              "200"
+                            ],
+                            [
+                              ":display",
+                              ":inline-block"
+                            ]
+                          ]
+                        ],
+                        [
+                          ":inner-text",
+                          [
+                            ":name",
+                            "info"
+                          ]
+                        ],
+                        [
+                          ":href",
+                          [
+                            ":repo",
+                            "info"
+                          ]
+                        ],
+                        [
+                          ":target",
+                          "|_blank"
+                        ]
+                      ]
+                    ],
+                    [
+                      "=<",
+                      "16",
+                      "nil"
+                    ],
+                    [
+                      "<>",
+                      [
+                        ":intro",
+                        "info"
+                      ],
+                      [
+                        "{}",
+                        [
+                          ":width",
+                          "400"
+                        ],
+                        [
+                          ":font-family",
+                          "ui/font-fancy"
+                        ],
+                        [
+                          ":display",
+                          ":inline-block"
+                        ]
+                      ]
+                    ],
+                    [
+                      "=<",
+                      "16",
+                      "nil"
+                    ],
+                    [
+                      "a",
+                      [
+                        "{}",
+                        [
+                          ":style",
+                          [
+                            "{}",
+                            [
+                              ":width",
+                              "200"
+                            ],
+                            [
+                              ":display",
+                              ":inline-block"
+                            ]
+                          ]
+                        ],
+                        [
+                          ":inner-text",
+                          "|Demo"
+                        ],
+                        [
+                          ":href",
+                          [
+                            ":demo",
+                            "info"
+                          ]
+                        ],
+                        [
+                          ":target",
+                          "|_blank"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ]
+            ]
+          ],
+          [
+            "=<",
+            "nil",
+            "40"
+          ],
+          [
+            "div",
+            [
+              "{}"
+            ],
+            [
+              "<>",
+              "|Find out more on GitHub "
+            ],
+            [
+              "a",
+              [
+                "{}",
+                [
+                  ":href",
+                  "|http://github.com/Quamolit/"
+                ],
+                [
+                  ":inner-text",
+                  "|Quamolit"
+                ]
+              ]
+            ],
+            [
+              "<>",
+              "|."
+            ]
+          ],
+          [
+            "when",
+            "dev?",
+            [
+              "comp-typed-reel",
+              [
+                ">>",
+                "states",
+                ":reel"
+              ],
+              "reel",
+              [
+                "{}"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.comp.container/comp-container",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'respo.schema/Component"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          [
+            "::",
+            "'reel.typed/State",
+            "'app.schema/Op",
+            "'app.schema/Store"
+          ]
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "projects",
+      [
+        "[]",
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Quamolit"
+          ],
+          [
+            ":intro",
+            "|Experimental Virtual DOM abstraction of canvas transitions"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/quamolit"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/quamolit/"
+          ]
+        ],
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Phlox"
+          ],
+          [
+            ":intro",
+            "|Virtual DOM library on top of PIXI.js"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/phlox"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/phlox/"
+          ]
+        ],
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Phlox Workflow"
+          ],
+          [
+            ":intro",
+            "|template project for Phlox"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/phlox-workflow"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/phlox-workflow/"
+          ]
+        ],
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Circling Tree"
+          ],
+          [
+            ":intro",
+            "|demo of Phlox"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/circling-tree"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/circling-tree/"
+          ]
+        ],
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Pixel Way"
+          ],
+          [
+            ":intro",
+            "|demo of Phlox"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/pixel-way"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/pixel-way/"
+          ]
+        ],
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Quatrefoil"
+          ],
+          [
+            ":intro",
+            "|Experimental Virtual DOM library on top of three.js"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/quatrefoil"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/quatrefoil/"
+          ]
+        ],
+        [
+          "%{}",
+          "Project",
+          [
+            ":name",
+            "|Axis"
+          ],
+          [
+            ":intro",
+            "|Axis for curves"
+          ],
+          [
+            ":repo",
+            "|https://github.com/Quamolit/axis"
+          ],
+          [
+            ":demo",
+            "|http://repo.quamolit.org/axis/"
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.comp.container/projects",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'List",
+      "'Project"
+    ],
+    "tags": [],
+    "tests": [
+      {
+        "code": [
+          "do",
+          [
+            "assert=",
+            "7",
+            [
+              "count",
+              "projects"
+            ]
+          ],
+          [
+            "assert=",
+            "|Quamolit",
+            [
+              ":name",
+              [
+                ".unwrap",
+                [
+                  "first",
+                  "projects"
+                ]
+              ]
+            ]
+          ],
+          [
+            "assert=",
+            "|http://repo.quamolit.org/axis/",
+            [
+              ":demo",
+              [
+                ".unwrap",
+                [
+                  "last",
+                  "projects"
+                ]
+              ]
+            ]
+          ]
+        ],
+        "name": "preserves-project-directory",
+        "tags": []
+      }
+    ]
+  },
+  {
+    "code": [
+      "defstruct",
+      "Site",
+      [
+        ":dev-ui",
+        "'String"
+      ],
+      [
+        ":release-ui",
+        "'String"
+      ],
+      [
+        ":cdn-url",
+        "'String"
+      ],
+      [
+        ":title",
+        "'String"
+      ],
+      [
+        ":icon",
+        "'String"
+      ],
+      [
+        ":storage-key",
+        "'String"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.config/Site",
+    "js_ffi": null,
+    "schema": "'StructDef",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "dev?",
+      "true"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.config/dev?",
+    "js_ffi": null,
+    "schema": "'Bool",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "site",
+      [
+        "%{}",
+        "Site",
+        [
+          ":dev-ui",
+          "|http://localhost:8100/main-fonts.css"
+        ],
+        [
+          ":release-ui",
+          "|http://cdn.tiye.me/favored-fonts/main-fonts.css"
+        ],
+        [
+          ":cdn-url",
+          "|http://cdn.tiye.me/quamolit.org/"
+        ],
+        [
+          ":title",
+          "|Quamolit"
+        ],
+        [
+          ":icon",
+          "|http://cdn.tiye.me/logo/quamolit.png"
+        ],
+        [
+          ":storage-key",
+          "|quamolit.org"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.config/site",
+    "js_ffi": null,
+    "schema": "'app.config/Site",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defref",
+      "*reel",
+      [
+        "assert-type",
+        [
+          "typed/new-reel",
+          "schema/store"
+        ],
+        [
+          "::",
+          "'reel.typed/State",
+          "'app.schema/Op",
+          "'app.schema/Store"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/*reel",
+    "js_ffi": null,
+    "schema": [
+      "::",
+      "'Ref",
+      [
+        "::",
+        "'reel.typed/State",
+        "'app.schema/Op",
+        "'app.schema/Store"
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "dispatch!",
+      [
+        "op"
+      ],
+      [
+        "when",
+        "config/dev?",
+        [
+          "println",
+          "|Dispatch:",
+          "op"
+        ]
+      ],
+      [
+        "match",
+        [
+          "typed/decode-control",
+          "op"
+        ],
+        [
+          [
+            ":some",
+            "control"
+          ],
+          [
+            "reset!",
+            "*reel",
+            [
+              "typed/apply-control",
+              "updater",
+              "@*reel",
+              "control"
+            ]
+          ]
+        ],
+        [
+          [
+            ":none"
+          ],
+          [
+            "match",
+            [
+              "schema/decode-op",
+              "op"
+            ],
+            [
+              [
+                ":some",
+                "action"
+              ],
+              [
+                "reset!",
+                "*reel",
+                [
+                  "typed/record-op",
+                  "updater",
+                  "@*reel",
+                  "action",
+                  [
+                    "generate-id!"
+                  ],
+                  [
+                    "now-ms"
+                  ]
+                ]
+              ]
+            ],
+            [
+              [
+                ":none"
+              ],
+              [
+                "eprintln",
+                "|Unknown op:",
+                "op"
+              ]
+            ]
+          ]
+        ]
+      ],
+      "&unit"
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/dispatch!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'Enum"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "main!",
+      [],
+      [
+        "println",
+        "|Running mode:",
+        [
+          "if",
+          "config/dev?",
+          "|dev",
+          "|release"
+        ]
+      ],
+      [
+        "if",
+        [
+          "ssr?"
+        ],
+        [
+          "render-app!",
+          "realize-ssr!"
+        ]
+      ],
+      [
+        "render-app!",
+        "render!"
+      ],
+      [
+        "add-watch!",
+        "*reel",
+        ":changes",
+        [
+          "fn",
+          [
+            "reel",
+            "prev"
+          ],
+          [
+            "render-app!",
+            "render!"
+          ]
+        ]
+      ],
+      [
+        "listen-devtools!",
+        "|a",
+        "dispatch!"
+      ],
+      [
+        "browser/add-event-listener!",
+        "|beforeunload",
+        [
+          "fn",
+          [
+            "event"
+          ],
+          [
+            "hint-fn",
+            [
+              "{}",
+              [
+                ":args",
+                [
+                  "[]",
+                  "'js-ffi.browser/EventHost"
+                ]
+              ],
+              [
+                ":return",
+                "'Unit"
+              ],
+              [
+                ":features",
+                [
+                  "#{}",
+                  ":js-ffi"
+                ]
+              ]
+            ]
+          ],
+          [
+            "persist-storage!"
+          ]
+        ]
+      ],
+      [
+        "browser/set-interval!",
+        "persist-storage!",
+        "60000"
+      ],
+      [
+        "println",
+        "|App started."
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/main!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "mount-target",
+      [],
+      [
+        "narrow-element",
+        [
+          "option:unwrap",
+          [
+            "browser/query-selector",
+            "|.app"
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/mount-target",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'respo.dom/DomElement"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "persist-storage!",
+      [],
+      [
+        "browser/storage-set!",
+        [
+          ":storage-key",
+          "config/site"
+        ],
+        [
+          "json-stringify",
+          [
+            "to-calcit-data",
+            [
+              "to-cirru-edn",
+              [
+                ":store",
+                "@*reel"
+              ]
+            ]
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/persist-storage!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "reload!",
+      [],
+      [
+        "clear-cache!"
+      ],
+      [
+        "reset!",
+        "*reel",
+        [
+          "typed/refresh",
+          "updater",
+          "@*reel",
+          "schema/store"
+        ]
+      ],
+      [
+        "println",
+        "|Code updated."
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/reload!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "render-app!",
+      [
+        "renderer"
+      ],
+      [
+        "renderer",
+        [
+          "mount-target"
+        ],
+        [
+          "comp-container",
+          "@*reel"
+        ],
+        "dispatch!"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/render-app!",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Unit"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          [
+            "::",
+            "'Fn",
+            [
+              "{}",
+              [
+                ":return",
+                "'Unit"
+              ],
+              [
+                ":args",
+                [
+                  "[]",
+                  [
+                    "::",
+                    "'JsNullish",
+                    "'respo.dom/DomElement"
+                  ],
+                  "'respo.schema/Component",
+                  [
+                    "::",
+                    "'Fn",
+                    [
+                      "{}",
+                      [
+                        ":return",
+                        "'Unit"
+                      ],
+                      [
+                        ":args",
+                        [
+                          "[]",
+                          "'Enum"
+                        ]
+                      ]
+                    ]
+                  ]
+                ]
+              ],
+              [
+                ":features",
+                [
+                  "#{}",
+                  ":js-ffi"
+                ]
+              ]
+            ]
+          ]
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "ssr?",
+      [],
+      [
+        "option:some?",
+        [
+          "browser/query-selector",
+          "|meta.respo-ssr"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.main/ssr?",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Bool"
+      ],
+      [
+        ":args",
+        [
+          "[]"
+        ]
+      ],
+      [
+        ":features",
+        [
+          "#{}",
+          ":js-ffi"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defenum",
+      "Op",
+      [
+        ":states",
+        [
+          "::",
+          "'List",
+          "'Tag"
+        ],
+        "'Dynamic"
+      ],
+      [
+        ":content",
+        "'String"
+      ],
+      [
+        ":hydrate-storage",
+        "'Store"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.schema/Op",
+    "js_ffi": null,
+    "schema": "'EnumDef",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defstruct",
+      "Store",
+      [
+        ":states",
+        [
+          "::",
+          "'Map",
+          "'Tag",
+          "'Dynamic"
+        ]
+      ],
+      [
+        ":content",
+        "'String"
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.schema/Store",
+    "js_ffi": null,
+    "schema": "'StructDef",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "decode-op",
+      [
+        "op"
+      ],
+      [
+        "match",
+        "op",
+        [
+          [
+            ":states",
+            "cursor",
+            "data"
+          ],
+          [
+            "if",
+            [
+              "list?",
+              "cursor"
+            ],
+            [
+              "Option",
+              ":some",
+              [
+                "%::",
+                "Op",
+                ":states",
+                [
+                  "map",
+                  "cursor",
+                  [
+                    "fn",
+                    [
+                      "item"
+                    ],
+                    [
+                      "hint-fn",
+                      [
+                        "{}",
+                        [
+                          ":args",
+                          [
+                            "[]",
+                            "'Dynamic"
+                          ]
+                        ],
+                        [
+                          ":return",
+                          "'Tag"
+                        ]
+                      ]
+                    ],
+                    [
+                      "if",
+                      [
+                        "tag?",
+                        "item"
+                      ],
+                      "item",
+                      [
+                        "raise",
+                        "|State cursor must contain tags"
+                      ]
+                    ]
+                  ]
+                ],
+                "data"
+              ]
+            ],
+            [
+              "Option",
+              ":none"
+            ]
+          ]
+        ],
+        [
+          [
+            ":content",
+            "value"
+          ],
+          [
+            "if",
+            [
+              "string?",
+              "value"
+            ],
+            [
+              "Option",
+              ":some",
+              [
+                "%::",
+                "Op",
+                ":content",
+                "value"
+              ]
+            ],
+            [
+              "Option",
+              ":none"
+            ]
+          ]
+        ],
+        [
+          [
+            ":hydrate-storage",
+            "value"
+          ],
+          [
+            "if",
+            [
+              "&struct:matches?",
+              "value",
+              "Store"
+            ],
+            [
+              "Option",
+              ":some",
+              [
+                "%::",
+                "Op",
+                ":hydrate-storage",
+                [
+                  "assert-type",
+                  "value",
+                  "'Store"
+                ]
+              ]
+            ],
+            [
+              "Option",
+              ":none"
+            ]
+          ]
+        ],
+        [
+          "_",
+          [
+            "Option",
+            ":none"
+          ]
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.schema/decode-op",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'Enum"
+        ]
+      ],
+      [
+        ":return",
+        [
+          "::",
+          "'Option",
+          "'app.schema/Op"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "def",
+      "store",
+      [
+        "%{}",
+        "Store",
+        [
+          ":states",
+          [
+            "{}",
+            [
+              ":cursor",
+              [
+                "[]"
+              ]
+            ]
+          ]
+        ],
+        [
+          ":content",
+          "|"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.schema/store",
+    "js_ffi": null,
+    "schema": "'app.schema/Store",
+    "tags": [],
+    "tests": []
+  },
+  {
+    "code": [
+      "defn",
+      "updater",
+      [
+        "store",
+        "op",
+        "op-id",
+        "op-time"
+      ],
+      [
+        "match",
+        "op",
+        [
+          [
+            ":states",
+            "cursor",
+            "s"
+          ],
+          [
+            "assoc",
+            "store",
+            ":states",
+            [
+              "assoc-in",
+              [
+                ":states",
+                "store"
+              ],
+              [
+                "concat",
+                "cursor",
+                [
+                  "[]",
+                  ":data"
+                ]
+              ],
+              "s"
+            ]
+          ]
+        ],
+        [
+          [
+            ":content",
+            "c"
+          ],
+          [
+            "assoc",
+            "store",
+            ":content",
+            "c"
+          ]
+        ],
+        [
+          [
+            ":hydrate-storage",
+            "d"
+          ],
+          "d"
+        ]
+      ]
+    ],
+    "doc": "",
+    "examples": [],
+    "ffi": null,
+    "ffi_edn": null,
+    "id": "app.updater/updater",
+    "js_ffi": null,
+    "schema": [
+      "{}",
+      [
+        ":kind",
+        ":fn"
+      ],
+      [
+        ":return",
+        "'Store"
+      ],
+      [
+        ":args",
+        [
+          "[]",
+          "'Store",
+          "'Op",
+          "'String",
+          "'Number"
+        ]
+      ]
+    ],
+    "tags": [],
+    "tests": [
+      {
+        "code": [
+          "let",
+          [
+            [
+              "changed",
+              [
+                "updater",
+                "store",
+                [
+                  "%::",
+                  "Op",
+                  ":content",
+                  "|updated"
+                ],
+                "|op-1",
+                "1"
+              ]
+            ]
+          ],
+          [
+            "assert=",
+            "|updated",
+            [
+              ":content",
+              "changed"
+            ]
+          ],
+          [
+            "assert=",
+            "changed",
+            [
+              "updater",
+              "store",
+              [
+                "%::",
+                "Op",
+                ":hydrate-storage",
+                "changed"
+              ],
+              "|op-2",
+              "2"
+            ]
+          ]
+        ],
+        "name": "preserves-content-and-hydration",
+        "tags": []
+      }
+    ]
+  }
+]
