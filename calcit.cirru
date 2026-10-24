@@ -5,7 +5,7 @@
   :entries $ {} $ :default
     {} (:description |) (:init-fn 'app.main/main!) (:mode :js) (:reload-fn 'app.main/reload!) (:target :browser)
       :feature-policy $ {}
-      :modules $ [] |respo.calcit/ |memof/ |respo-ui.calcit/ |reel.calcit/ |js-ffi/
+      :modules $ [] |respo.calcit/ |respo-ui.calcit/ |reel.calcit/ |js-ffi/
       :type-slots $ {} $ :dispatch-op |app.schema/Op
   :files $ {}
     'app.comp.container $ %{} 'FileEntry
@@ -20,7 +20,7 @@
                 store $ :store reel
                 states $ :states store
               div
-                {} $ :style $ merge ui/global
+                {} $ :style $ .merge ui/global
                   {} $ :padding 40
                 img $ {} (:src |http://cdn.tiye.me/logo/quamolit.png)
                   :style $ {} $ :width 280
@@ -36,7 +36,7 @@
                         :return 'respo.schema/Element
                       div
                         {}
-                          :style $ merge ui/row $ {} (:padding 8)
+                          :style $ .merge ui/row $ {} (:padding 8)
                           :class-name |hover-item
                         a $ {}
                           :style $ {} (:width 200) (:display :inline-block)
@@ -64,19 +64,13 @@
         'projects $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def projects
             []
-              %{} Project (:name |Quamolit)
-                :intro "|Experimental Virtual DOM abstraction of canvas transitions"
-                :repo |https://github.com/Quamolit/quamolit
-                :demo |http://repo.quamolit.org/quamolit/
-              %{} Project (:name |Phlox) (:intro "|Virtual DOM library on top of PIXI.js") (:repo |https://github.com/Quamolit/phlox) (:demo |http://repo.quamolit.org/phlox/)
-              %{} Project (:name "|Phlox Workflow") (:intro "|template project for Phlox") (:repo |https://github.com/Quamolit/phlox-workflow) (:demo |http://repo.quamolit.org/phlox-workflow/)
-              %{} Project (:name "|Circling Tree") (:intro "|demo of Phlox") (:repo |https://github.com/Quamolit/circling-tree) (:demo |http://repo.quamolit.org/circling-tree/)
-              %{} Project (:name "|Pixel Way") (:intro "|demo of Phlox") (:repo |https://github.com/Quamolit/pixel-way) (:demo |http://repo.quamolit.org/pixel-way/)
-              %{} Project (:name |Quatrefoil)
-                :intro "|Experimental Virtual DOM library on top of three.js"
-                :repo |https://github.com/Quamolit/quatrefoil
-                :demo |http://repo.quamolit.org/quatrefoil/
-              %{} Project (:name |Axis) (:intro "|Axis for curves") (:repo |https://github.com/Quamolit/axis) (:demo |http://repo.quamolit.org/axis/)
+              Project :name |Quamolit :intro "|Experimental Virtual DOM abstraction of canvas transitions" :repo |https://github.com/Quamolit/quamolit :demo |http://repo.quamolit.org/quamolit/
+              Project :name |Phlox :intro "|Virtual DOM library on top of PIXI.js" :repo |https://github.com/Quamolit/phlox :demo |http://repo.quamolit.org/phlox/
+              Project :name "|Phlox Workflow" :intro "|template project for Phlox" :repo |https://github.com/Quamolit/phlox-workflow :demo |http://repo.quamolit.org/phlox-workflow/
+              Project :name "|Circling Tree" :intro "|demo of Phlox" :repo |https://github.com/Quamolit/circling-tree :demo |http://repo.quamolit.org/circling-tree/
+              Project :name "|Pixel Way" :intro "|demo of Phlox" :repo |https://github.com/Quamolit/pixel-way :demo |http://repo.quamolit.org/pixel-way/
+              Project :name |Quatrefoil :intro "|Experimental Virtual DOM library on top of three.js" :repo |https://github.com/Quamolit/quatrefoil :demo |http://repo.quamolit.org/quatrefoil/
+              Project :name |Axis :intro "|Axis for curves" :repo |https://github.com/Quamolit/axis :demo |http://repo.quamolit.org/axis/
           :examples $ []
           :schema $ :: 'List 'Project
           :tests $ [] $ %{} 'TestEntry (:name |preserves-project-directory)
@@ -104,7 +98,7 @@
           :schema $ :: 'Bool
         'site $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def site
-            %{} Site (:dev-ui |http://localhost:8100/main-fonts.css) (:release-ui |http://cdn.tiye.me/favored-fonts/main-fonts.css) (:cdn-url |http://cdn.tiye.me/quamolit.org/) (:title |Quamolit) (:icon |http://cdn.tiye.me/logo/quamolit.png) (:storage-key |quamolit.org)
+            Site :dev-ui |http://localhost:8100/main-fonts.css :release-ui |http://cdn.tiye.me/favored-fonts/main-fonts.css :cdn-url |http://cdn.tiye.me/quamolit.org/ :title |Quamolit :icon |http://cdn.tiye.me/logo/quamolit.png :storage-key |quamolit.org
           :examples $ []
           :schema $ :: 'app.config/Site
       :ns $ %{} 'NsEntry (:doc |)
@@ -113,7 +107,7 @@
       :defs $ {}
         '*reel $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defref *reel
-            assert-type (typed/new-reel schema/store) (:: 'reel.typed/State 'app.schema/Op 'app.schema/Store)
+            typed/State :base schema/store :store schema/store :records ([]) :pointer (Option :none) :stopped? false :display? false :merged? false
           :examples $ []
           :schema $ :: 'Ref $ :: 'reel.typed/State 'app.schema/Op 'app.schema/Store
         'dispatch! $ %{} 'CodeEntry (:doc |)
@@ -153,7 +147,7 @@
             :features $ #{} :js-ffi
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn mount-target ()
-            narrow-element $ option:unwrap $ browser/query-selector |.app
+            .unwrap $ respo-browser/query-selector |.app
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'respo.dom/DomElement)
             :args $ []
@@ -176,19 +170,24 @@
             :features $ #{} :js-ffi
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! (renderer)
-            renderer (mount-target) (comp-container @*reel) dispatch!
+            renderer (mount-target) (comp-container @*reel)
+              fn (op)
+                hint-fn $ {}
+                  :args $ [] 'Dynamic
+                  :return 'Unit
+                if (enum? op) (dispatch! op) (raise "|Expected an Enum operation from renderer")
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Unit)
             :args $ [] $ :: 'Fn
               {} (:return 'Unit)
-                :args $ [] (:: 'JsNullish 'respo.dom/DomElement) 'respo.schema/Component $ :: 'Fn
+                :args $ [] 'respo.dom/DomElement 'respo.schema/Component $ :: 'Fn
                   {} (:return 'Unit)
-                    :args $ [] 'Enum
+                    :args $ [] 'Dynamic
                 :features $ #{} :js-ffi
             :features $ #{} :js-ffi
         'ssr? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn ssr? ()
-            option:some? $ browser/query-selector |meta.respo-ssr
+            .some? $ browser/query-selector |meta.respo-ssr
           :examples $ []
           :schema $ :: 'Fn $ {} (:return 'Bool)
             :args $ []
@@ -205,7 +204,7 @@
             reel.typed :as typed
             js-ffi.browser :as browser
             js-ffi.shared :refer $ now-ms
-            respo.ffi.browser :refer $ narrow-element
+            respo.ffi.browser :as respo-browser
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Op $ %{} 'CodeEntry (:doc |)
@@ -226,7 +225,7 @@
             match op
               (:states cursor data)
                 if (list? cursor)
-                  Option :some $ %:: Op :states
+                  Option :some $ Op :states
                     map cursor $ fn (item)
                       hint-fn $ {}
                         :args $ [] 'Dynamic
@@ -236,11 +235,13 @@
                   Option :none
               (:content value)
                 if (string? value)
-                  Option :some $ %:: Op :content value
+                  Option :some $ Op :content value
                   Option :none
               (:hydrate-storage value)
-                if (&struct:matches? value Store)
-                  Option :some $ %:: Op :hydrate-storage $ assert-type value 'Store
+                if (struct? value)
+                  if (&struct:matches? value Store)
+                    Option :some $ Op :hydrate-storage value
+                    Option :none
                   Option :none
               _ $ Option :none
           :examples $ []
@@ -249,9 +250,9 @@
             :return $ :: 'Option 'app.schema/Op
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
-            %{} Store
-              :states $ {} $ :cursor ([])
-              :content |
+            Store :states
+              {} $ :cursor $ []
+              , :content |
           :examples $ []
           :schema $ :: 'app.schema/Store
       :ns $ %{} 'NsEntry (:doc |)
@@ -262,9 +263,11 @@
           :code $ quote $ defn updater (store op op-id op-time)
             match op
               (:states cursor s)
-                assoc store :states $ assoc-in (:states store)
-                  concat cursor $ [] :data
-                  , s
+                assoc store :states $ decode-map-as
+                  assoc-in (:states store)
+                    .concat cursor $ [] :data
+                    , s
+                  :: 'Map 'Tag 'Dynamic
               (:content c) (assoc store :content c)
               (:hydrate-storage d) d
           :examples $ []
@@ -272,9 +275,16 @@
             :args $ [] 'Store 'Op 'String 'Number
           :tests $ [] $ %{} 'TestEntry (:name |preserves-content-and-hydration)
             :code $ quote $ let
-                changed $ updater store (%:: Op :content |updated) |op-1 1
+                changed $ updater store (Op :content |updated) |op-1 1
               assert= |updated $ :content changed
-              assert= changed $ updater store (%:: Op :hydrate-storage changed) |op-2 2
+              assert= changed $ updater store (Op :hydrate-storage changed) |op-2 2
+              assert=
+                {}
+                  :cursor $ []
+                  :panel $ {} $ :data |checked-state
+                :states $ updater store
+                  Op :states ([] :panel) |checked-state
+                  , |op-3 3
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
           :require $ app.schema :refer $ Store Op store
