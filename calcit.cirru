@@ -13,7 +13,7 @@
         'Project $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Project (:name 'String) (:intro 'String) (:repo 'String) (:demo 'String)
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'comp-container $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defcomp comp-container (reel)
             let
@@ -31,9 +31,7 @@
                   {} $ :style $ {} (:font-size 16)
                   , & $ -> projects $ map
                     fn (info)
-                      hint-fn $ {}
-                        :args $ [] 'Project
-                        :return 'respo.schema/Element
+                      hint-fn $ Fn Project $ -> respo.schema/Element
                       div
                         {}
                           :style $ .merge ui/row $ {} (:padding 8)
@@ -58,9 +56,7 @@
                   <> |.
                 when dev? $ comp-typed-reel (>> states :reel) reel $ {}
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'respo.schema/Component)
-            :args $ [] $ :: 'reel.typed/State 'app.schema/Op 'app.schema/Store
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (reel.typed/State app.schema/Op app.schema/Store) (-> respo.schema/Component) (:features :js-ffi)
         'projects $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def projects
             []
@@ -72,7 +68,7 @@
               Project :name |Quatrefoil :intro "|Experimental Virtual DOM library on top of three.js" :repo |https://github.com/Quamolit/quatrefoil :demo |http://repo.quamolit.org/quatrefoil/
               Project :name |Axis :intro "|Axis for curves" :repo |https://github.com/Quamolit/axis :demo |http://repo.quamolit.org/axis/
           :examples $ []
-          :schema $ :: 'List 'Project
+          :schema $ quote $ List Project
           :tests $ [] $ %{} 'TestEntry (:name |preserves-project-directory)
             :code $ quote $ do
               assert= 7 $ count projects
@@ -91,16 +87,16 @@
         'Site $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Site (:dev-ui 'String) (:release-ui 'String) (:cdn-url 'String) (:title 'String) (:icon 'String) (:storage-key 'String)
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'dev? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def dev? true
           :examples $ []
-          :schema $ :: 'Bool
+          :schema $ quote Bool
         'site $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def site
             Site :dev-ui |http://localhost:8100/main-fonts.css :release-ui |http://cdn.tiye.me/favored-fonts/main-fonts.css :cdn-url |http://cdn.tiye.me/quamolit.org/ :title |Quamolit :icon |http://cdn.tiye.me/logo/quamolit.png :storage-key |quamolit.org
           :examples $ []
-          :schema $ :: 'app.config/Site
+          :schema $ quote app.config/Site
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.config
     'app.main $ %{} 'FileEntry
@@ -109,7 +105,7 @@
           :code $ quote $ defref *reel
             typed/State :base schema/store :store schema/store :records ([]) :pointer (Option :none) :stopped? false :display? false :merged? false
           :examples $ []
-          :schema $ :: 'Ref $ :: 'reel.typed/State 'app.schema/Op 'app.schema/Store
+          :schema $ quote $ Ref (reel.typed/State app.schema/Op app.schema/Store)
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when config/dev? $ println |Dispatch: op
@@ -123,9 +119,7 @@
                   (:none) (eprintln "|Unknown op:" op)
             , &unit
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ [] 'Enum
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn Enum (-> Unit) (:features :js-ffi)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
@@ -134,64 +128,48 @@
             add-watch! *reel :changes $ fn (reel prev) (render-app! render!)
             listen-devtools! |a dispatch!
             browser/add-event-listener! |beforeunload $ fn (event)
-              hint-fn $ {}
-                :args $ [] 'js-ffi.browser/EventHost
-                :return 'Unit
-                :features $ #{} :js-ffi
+              hint-fn $ Fn js-ffi.browser/EventHost (-> Unit) (:features :js-ffi)
               persist-storage!
             browser/set-interval! persist-storage! 60000
             println "|App started."
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn mount-target ()
             .unwrap $ respo-browser/query-selector |.app
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'respo.dom/DomElement)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> respo.dom/DomElement) (:features :js-ffi)
         'persist-storage! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn persist-storage! ()
             browser/storage-set! (:storage-key config/site)
               json-stringify $ to-calcit-data $ to-cirru-edn (:store @*reel)
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (clear-cache!)
             reset! *reel $ typed/refresh updater @*reel schema/store
             println "|Code updated."
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! (renderer)
             renderer (mount-target) (comp-container @*reel)
               fn (op)
-                hint-fn $ {}
-                  :args $ [] 'Dynamic
-                  :return 'Unit
+                hint-fn $ Fn Dynamic $ -> Unit
                 if (enum? op) (dispatch! op) (raise "|Expected an Enum operation from renderer")
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Unit)
-            :args $ [] $ :: 'Fn
-              {} (:return 'Unit)
-                :args $ [] 'respo.dom/DomElement 'respo.schema/Component $ :: 'Fn
-                  {} (:return 'Unit)
-                    :args $ [] 'Dynamic
-                :features $ #{} :js-ffi
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn
+            Fn respo.dom/DomElement respo.schema/Component
+              Fn Dynamic $ -> Unit
+              -> Unit
+              :features :js-ffi
+            -> Unit
+            :features :js-ffi
         'ssr? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn ssr? ()
             .some? $ browser/query-selector |meta.respo-ssr
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Bool)
-            :args $ []
-            :features $ #{} :js-ffi
+          :schema $ quote $ Fn (-> Bool) (:features :js-ffi)
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.main
           :require
@@ -209,17 +187,19 @@
       :defs $ {}
         'Op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Op
-            :states (:: 'List 'Tag) 'Dynamic
+            :states
+              quote $ List Tag
+              , 'Dynamic
             :content 'String
             :hydrate-storage 'Store
           :examples $ []
-          :schema $ :: 'EnumDef
+          :schema $ quote EnumDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store
-            :states $ :: 'Map 'Tag 'Dynamic
+            :states $ quote $ Map Tag Dynamic
             :content 'String
           :examples $ []
-          :schema $ :: 'StructDef
+          :schema $ quote StructDef
         'decode-op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn decode-op (op)
             match op
@@ -227,9 +207,7 @@
                 if (list? cursor)
                   Option :some $ Op :states
                     map cursor $ fn (item)
-                      hint-fn $ {}
-                        :args $ [] 'Dynamic
-                        :return 'Tag
+                      hint-fn $ Fn Dynamic $ -> Tag
                       if (tag? item) item $ raise "|State cursor must contain tags"
                     , data
                   Option :none
@@ -245,16 +223,15 @@
                   Option :none
               _ $ Option :none
           :examples $ []
-          :schema $ :: 'Fn $ {}
-            :args $ [] 'Enum
-            :return $ :: 'Option 'app.schema/Op
+          :schema $ quote $ Fn Enum
+            -> $ Option app.schema/Op
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
             Store :states
               {} $ :cursor $ []
               , :content |
           :examples $ []
-          :schema $ :: 'app.schema/Store
+          :schema $ quote app.schema/Store
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.schema
     'app.updater $ %{} 'FileEntry
@@ -271,8 +248,7 @@
               (:content c) (assoc store :content c)
               (:hydrate-storage d) d
           :examples $ []
-          :schema $ :: 'Fn $ {} (:return 'Store)
-            :args $ [] 'Store 'Op 'String 'Number
+          :schema $ quote $ Fn Store Op String Number (-> Store)
           :tests $ [] $ %{} 'TestEntry (:name |preserves-content-and-hydration)
             :code $ quote $ let
                 changed $ updater store (Op :content |updated) |op-1 1
