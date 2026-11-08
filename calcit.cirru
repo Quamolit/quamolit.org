@@ -6,12 +6,12 @@
     {} (:description |) (:init-fn 'app.main/main!) (:mode :js) (:reload-fn 'app.main/reload!) (:target :browser)
       :feature-policy $ {}
       :modules $ [] |respo.calcit/ |respo-ui.calcit/ |reel.calcit/ |js-ffi/
-      :type-slots $ {} $ :dispatch-op |app.schema/Op
+      :type-slots $ {} $ :dispatch-op 'app.schema/Op
   :files $ {}
     'app.comp.container $ %{} 'FileEntry
       :defs $ {}
         'Project $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defstruct Project (:name 'String) (:intro 'String) (:repo 'String) (:demo 'String)
+          :code $ quote $ defstruct Project (:name String) (:intro String) (:repo String) (:demo String)
           :examples $ []
           :schema $ quote StructDef
         'comp-container $ %{} 'CodeEntry (:doc |)
@@ -41,20 +41,22 @@
                           :inner-text $ :name info
                           :href $ :repo info
                           :target |_blank
-                        =< 16 nil
+                        space-x 16
                         <> (:intro info)
                           {} (:width 400) (:font-family ui/font-fancy) (:display :inline-block)
-                        =< 16 nil
+                        space-x 16
                         a $ {}
                           :style $ {} (:width 200) (:display :inline-block)
                           :inner-text |Demo
                           :href $ :demo info
                           :target |_blank
-                =< nil 40
+                space-y 40
                 div ({}) (<> "|Find out more on GitHub ")
                   a $ {} (:href |http://github.com/Quamolit/) (:inner-text |Quamolit)
                   <> |.
-                when dev? $ comp-typed-reel (>> states :reel) reel $ {}
+                if dev?
+                  Option :some $ comp-typed-reel (>> states :reel) reel $ {}
+                  Option :none
           :examples $ []
           :schema $ quote $ Fn (reel.typed/State app.schema/Op app.schema/Store) (-> respo.schema/Component) (:features :js-ffi)
         'projects $ %{} 'CodeEntry (:doc |)
@@ -78,14 +80,14 @@
         :code $ quote $ ns app.comp.container
           :require (respo-ui.core :as ui)
             respo.core :refer $ defcomp >> <> div img a
-            respo.comp.space :refer $ =<
+            respo.comp.space :refer $ space-x space-y
             reel.comp.reel :refer $ comp-typed-reel
             app.schema :as schema
             app.config :refer $ dev?
     'app.config $ %{} 'FileEntry
       :defs $ {}
         'Site $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defstruct Site (:dev-ui 'String) (:release-ui 'String) (:cdn-url 'String) (:title 'String) (:icon 'String) (:storage-key 'String)
+          :code $ quote $ defstruct Site (:dev-ui String) (:release-ui String) (:cdn-url String) (:title String) (:icon String) (:storage-key String)
           :examples $ []
           :schema $ quote StructDef
         'dev? $ %{} 'CodeEntry (:doc |)
@@ -109,23 +111,32 @@
         'dispatch! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch! (op)
             when config/dev? $ println |Dispatch: op
-            match (typed/decode-control op)
-              (:some control)
-                reset! *reel $ typed/apply-control updater @*reel control
-              (:none)
-                match (schema/decode-op op)
-                  (:some action)
-                    reset! *reel $ typed/record-op updater @*reel action (generate-id!) (now-ms)
-                  (:none) (eprintln "|Unknown op:" op)
+            if
+              = (enum-definition op) (Option :some typed/Control)
+              dispatch-resolved! $ decode-map-as op 'reel.typed/Control
+              match (typed/decode-control op)
+                (:some control) (dispatch-resolved! control)
+                (:none)
+                  match (schema/decode-op op)
+                    (:some action) (dispatch-resolved! action)
+                    (:none) (eprintln "|Unknown op:" op)
             , &unit
           :examples $ []
-          :schema $ quote $ Fn Enum (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn AnyEnum (-> Unit)
+        'dispatch-resolved! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-resolved! (op)
+            reset! *reel $ match op
+              (reel.typed/Control control) (typed/apply-control updater @*reel control)
+              (app.schema/Op action)
+                typed/record-op updater @*reel action (generate-id!) (now-ms)
+            , &unit
+          :examples $ []
+          :schema $ quote $ Fn app.schema/ResolvedOp (-> Unit) (:features :js-ffi)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
-            if (ssr?) (render-app! realize-ssr!)
-            render-app! render!
-            add-watch! *reel :changes $ fn (reel prev) (render-app! render!)
+            render-app! $ ssr?
+            add-watch! *reel :changes $ fn (reel prev) (render-app! false)
             listen-devtools! |a dispatch!
             browser/add-event-listener! |beforeunload $ fn (event)
               hint-fn $ Fn js-ffi.browser/EventHost (-> Unit) (:features :js-ffi)
@@ -152,19 +163,16 @@
           :examples $ []
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'render-app! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn render-app! (renderer)
-            renderer (mount-target) (comp-container @*reel)
-              fn (op)
-                hint-fn $ Fn Dynamic $ -> Unit
-                if (enum? op) (dispatch! op) (raise "|Expected an Enum operation from renderer")
+          :code $ quote $ defn render-app! (hydrate?)
+            let
+                target $ mount-target
+                tree $ comp-container @*reel
+                deliver! $ fn (op)
+                  hint-fn $ Fn app.schema/Op $ -> Unit
+                  dispatch! op
+              if hydrate? (realize-ssr! target tree deliver!) (render! target tree deliver!)
           :examples $ []
-          :schema $ quote $ Fn
-            Fn respo.dom/DomElement respo.schema/Component
-              Fn Dynamic $ -> Unit
-              -> Unit
-              :features :js-ffi
-            -> Unit
-            :features :js-ffi
+          :schema $ quote $ Fn Bool (-> Unit) (:features :js-ffi)
         'ssr? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn ssr? ()
             .some? $ browser/query-selector |meta.respo-ssr
@@ -187,17 +195,19 @@
       :defs $ {}
         'Op $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defenum Op
-            :states
-              quote $ List Tag
-              , 'Dynamic
-            :content 'String
-            :hydrate-storage 'Store
+            :states (List Tag) Dynamic
+            :content String
+            :hydrate-storage Store
           :examples $ []
           :schema $ quote EnumDef
+        'ResolvedOp $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defunion ResolvedOp Op reel.typed/Control
+          :examples $ []
+          :schema $ quote UnionDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store
-            :states $ quote $ Map Tag Dynamic
-            :content 'String
+            :states $ Map Tag Dynamic
+            :content String
           :examples $ []
           :schema $ quote StructDef
         'decode-op $ %{} 'CodeEntry (:doc |)
@@ -223,7 +233,7 @@
                   Option :none
               _ $ Option :none
           :examples $ []
-          :schema $ quote $ Fn Enum
+          :schema $ quote $ Fn AnyEnum
             -> $ Option app.schema/Op
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
@@ -244,7 +254,7 @@
                   assoc-in (:states store)
                     .concat cursor $ [] :data
                     , s
-                  :: 'Map 'Tag 'Dynamic
+                  Map Tag Dynamic
               (:content c) (assoc store :content c)
               (:hydrate-storage d) d
           :examples $ []

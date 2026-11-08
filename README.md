@@ -3,14 +3,9 @@ Quamolit Home
 
 ### 使用者影响
 
-配对升级正式 Calcit CLI/procs 0.32.1，类型标注通过官方 CLI 迁移。
-采用已发布 Reel 0.7.0、UI 0.9.0、Respo 0.17.1、JS-FFI 0.2.9 的一致依赖图；
-UI 固定的 Router 0.9.0-alpha.4 仍保留，不宣称整个依赖图都已稳定。
-原19个项目定义的完整code/schema/元数据/原测试与格式化基线完全一致。
+使用正式 Calcit 和 `@calcit/procs` 0.37.0。请重新安装依赖并构建。已发布依赖为 Reel 0.10.0、UI 0.15.2、Respo 0.19.5、JS-FFI 0.2.13，传递 Router 0.12.2。
 
-七个项目及其Demo链接、280px Logo、SSR分支、Reel面板、Store/Op/State合同、
-原存档格式与页面结构不变。原先未启用的存档读取继续不启用，刷新不等于恢复存档。
-渲染入口仍检查Enum，异构状态写回仍经过真实Map解码，不新增cast或放宽字段合同。
+七个项目及其 Demo 链接、280px Logo、SSR 路径、Reel 面板和原存档格式继续沿用。渲染回调使用名义 `Op`，内部通过 `Op | Reel.Control` 区分业务更新和历史控制，旧调试事件仍可识别。
 
 ### 开发与验收
 
@@ -28,11 +23,7 @@ yarn build
 yarn dev
 ```
 
-本地完整strict、200/200定义、19/19公开定义、原两项附带测试、工具链配对、
-immutable安装及构建通过。实际IAB显示七个项目/七个Demo链接属性、Logo，
-原Shift+Alt+Command+A可展开Reel，Close关闭，刷新正常，控制台无警告/错误。
-未宣称所有目标URL健康、SSR hydration、存档恢复、移动端或跨浏览器均已验收。
-开放状态边界保留，不宣称类型债务清零。
+0.37.0 本地通过 210 个定义、完整 strict、原两项附带测试和 Vite 构建。生成 JS 验证了名义操作、两种 Reel 控制、七个 Demo 链接和 Logo 渲染。实际浏览器 SSR hydration 留待独立验收。
 
 ### 前端部署
 
