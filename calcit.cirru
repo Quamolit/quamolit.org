@@ -15,7 +15,7 @@
           :examples $ []
           :schema $ quote StructDef
         'comp-container $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defcomp comp-container (reel)
+          :code $ quote $ defcomp comp-container (reel on-control)
             let
                 store $ :store reel
                 states $ :states store
@@ -55,10 +55,13 @@
                   a $ {} (:href |http://github.com/Quamolit/) (:inner-text |Quamolit)
                   <> |.
                 if dev?
-                  Option :some $ comp-typed-reel (>> states :reel) reel $ {}
+                  Option :some $ comp-typed-reel (>> states :reel) reel ({}) on-control
                   Option :none
           :examples $ []
-          :schema $ quote $ Fn (reel.typed/State app.schema/Op app.schema/Store) (-> respo.schema/Component) (:features :js-ffi)
+          :schema $ quote $ Fn (reel.typed/State app.schema/Op app.schema/Store)
+            Fn reel.typed/Control $ -> Unit
+            -> respo.schema/Component
+            :features :js-ffi
         'projects $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def projects
             []
@@ -108,21 +111,14 @@
             typed/State :base schema/store :store schema/store :records ([]) :pointer (Option :none) :stopped? false :display? false :merged? false
           :examples $ []
           :schema $ quote $ Ref (reel.typed/State app.schema/Op app.schema/Store)
-        'dispatch! $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn dispatch! (op)
-            when config/dev? $ println |Dispatch: op
-            if
-              = (enum-definition op) (Option :some typed/Control)
-              dispatch-resolved! $ decode-map-as op 'reel.typed/Control
-              match (typed/decode-control op)
-                (:some control) (dispatch-resolved! control)
-                (:none)
-                  match (schema/decode-op op)
-                    (:some action) (dispatch-resolved! action)
-                    (:none) (eprintln "|Unknown op:" op)
-            , &unit
+        'dispatch-control! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-control! (op) (dispatch-resolved! op)
           :examples $ []
-          :schema $ quote $ Fn AnyEnum (-> Unit)
+          :schema $ quote $ Fn reel.typed/Control (-> Unit) (:features :js-ffi)
+        'dispatch-op! $ %{} 'CodeEntry (:doc |)
+          :code $ quote $ defn dispatch-op! (op) (dispatch-resolved! op)
+          :examples $ []
+          :schema $ quote $ Fn app.schema/Op (-> Unit) (:features :js-ffi)
         'dispatch-resolved! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch-resolved! (op)
             reset! *reel $ match op
@@ -137,7 +133,7 @@
             println "|Running mode:" $ if config/dev? |dev |release
             render-app! $ ssr?
             add-watch! *reel :changes $ fn (reel prev) (render-app! false)
-            listen-devtools! |a dispatch!
+            listen-devtools! |a dispatch-control!
             browser/add-event-listener! |beforeunload $ fn (event)
               hint-fn $ Fn js-ffi.browser/EventHost (-> Unit) (:features :js-ffi)
               persist-storage!
@@ -164,13 +160,10 @@
           :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! (hydrate?)
-            let
+            memo/with-memo-frame $ fn () $ let
                 target $ mount-target
-                tree $ comp-container @*reel
-                deliver! $ fn (op)
-                  hint-fn $ Fn app.schema/Op $ -> Unit
-                  dispatch! op
-              if hydrate? (realize-ssr! target tree deliver!) (render! target tree deliver!)
+                tree $ comp-container @*reel dispatch-control!
+              if hydrate? (realize-ssr! target tree dispatch-op!) (render! target tree dispatch-op!)
           :examples $ []
           :schema $ quote $ Fn Bool (-> Unit) (:features :js-ffi)
         'ssr? $ %{} 'CodeEntry (:doc |)
@@ -191,6 +184,7 @@
             js-ffi.browser :as browser
             js-ffi.shared :refer $ now-ms
             respo.ffi.browser :as respo-browser
+            respo.memo :as memo
     'app.schema $ %{} 'FileEntry
       :defs $ {}
         'Op $ %{} 'CodeEntry (:doc |)
@@ -210,31 +204,6 @@
             :content String
           :examples $ []
           :schema $ quote StructDef
-        'decode-op $ %{} 'CodeEntry (:doc |)
-          :code $ quote $ defn decode-op (op)
-            match op
-              (:states cursor data)
-                if (list? cursor)
-                  Option :some $ Op :states
-                    map cursor $ fn (item)
-                      hint-fn $ Fn Dynamic $ -> Tag
-                      if (tag? item) item $ raise "|State cursor must contain tags"
-                    , data
-                  Option :none
-              (:content value)
-                if (string? value)
-                  Option :some $ Op :content value
-                  Option :none
-              (:hydrate-storage value)
-                if (struct? value)
-                  if (&struct:matches? value Store)
-                    Option :some $ Op :hydrate-storage value
-                    Option :none
-                  Option :none
-              _ $ Option :none
-          :examples $ []
-          :schema $ quote $ Fn AnyEnum
-            -> $ Option app.schema/Op
         'store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def store
             Store :states
