@@ -3,7 +3,7 @@ Quamolit Home
 
 ### 使用者影响
 
-使用正式 Calcit 和 `@calcit/procs` 0.38.0。请重新安装依赖并构建。已发布依赖为 Reel 0.11.0、UI 0.15.2、Respo 0.19.5、JS-FFI 0.2.13，传递 Router 0.12.2。
+使用正式 Calcit 和 `@calcit/procs` 0.40.0。请重新安装依赖并构建。已发布依赖为 Reel 0.11.0、UI 0.15.2、Respo 0.19.5、JS-FFI 0.2.13，传递 Router 0.12.2。
 
 七个项目及其 Demo 链接、280px Logo、SSR 路径、Reel 面板和原存档格式继续沿用。渲染回调使用名义 `Op`，内部通过 `Op | Reel.Control` 区分业务更新和历史控制，Reel 面板和快捷键使用独立的具名 Control 回调。
 
