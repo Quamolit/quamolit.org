@@ -135,7 +135,7 @@
             add-watch! *reel :changes $ fn (reel prev) (render-app! false)
             listen-devtools! |a dispatch-control!
             browser/add-event-listener! |beforeunload $ fn (event)
-              hint-fn $ Fn js-ffi.browser/EventHost (-> Unit) (:features :js-ffi)
+              hint-fn $ Fn browser/EventHost (-> Unit) (:features :js-ffi)
               persist-storage!
             browser/set-interval! persist-storage! 60000
             println "|App started."
@@ -198,9 +198,14 @@
           :code $ quote $ defunion ResolvedOp Op reel.typed/Control
           :examples $ []
           :schema $ quote UnionDef
+        'StateValue $ %{} 'CodeEntry
+          :doc "|The site state tree contains text values, Tag cursors, and nested branches."
+          :code $ quote $ defunion StateValue String (List Tag) (Map Tag StateValue)
+          :examples $ []
+          :schema $ quote UnionDef
         'Store $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defstruct Store
-            :states $ Map Tag Dynamic
+            :states $ Map Tag StateValue
             :content String
           :examples $ []
           :schema $ quote StructDef
@@ -223,7 +228,7 @@
                   assoc-in (:states store)
                     .concat cursor $ [] :data
                     , s
-                  Map Tag Dynamic
+                  Map Tag app.schema/StateValue
               (:content c) (assoc store :content c)
               (:hydrate-storage d) d
           :examples $ []
@@ -236,9 +241,10 @@
               assert=
                 {}
                   :cursor $ []
-                  :panel $ {} $ :data |checked-state
+                  :panel $ {} $ :child
+                    {} $ :data |checked-state
                 :states $ updater store
-                  Op :states ([] :panel) |checked-state
+                  Op :states ([] :panel :child) |checked-state
                   , |op-3 3
       :ns $ %{} 'NsEntry (:doc |)
         :code $ quote $ ns app.updater
