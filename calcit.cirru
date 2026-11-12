@@ -114,11 +114,11 @@
         'dispatch-control! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch-control! (op) (dispatch-resolved! op)
           :examples $ []
-          :schema $ quote $ Fn typed/Control (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn typed/Control (-> Unit) (:features :js-ffi :state)
         'dispatch-op! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch-op! (op) (dispatch-resolved! op)
           :examples $ []
-          :schema $ quote $ Fn schema/Op (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn schema/Op (-> Unit) (:features :js-ffi :state)
         'dispatch-resolved! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn dispatch-resolved! (op)
             reset! *reel $ match op
@@ -127,7 +127,7 @@
                 typed/record-op updater @*reel action (generate-id!) (now-ms)
             , &unit
           :examples $ []
-          :schema $ quote $ Fn schema/ResolvedOp (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn schema/ResolvedOp (-> Unit) (:features :js-ffi :state)
         'main! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn main! ()
             println "|Running mode:" $ if config/dev? |dev |release
@@ -140,7 +140,7 @@
             browser/set-interval! persist-storage! 60000
             println "|App started."
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi :state)
         'mount-target $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn mount-target ()
             .unwrap $ respo-browser/query-selector |.app
@@ -151,13 +151,13 @@
             browser/storage-set! (:storage-key config/site)
               json-stringify $ to-calcit-data $ to-cirru-edn (:store @*reel)
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :js-ffi :state)
         'reload! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn reload! () (clear-cache!)
             reset! *reel $ typed/refresh updater @*reel schema/store
             println "|Code updated."
           :examples $ []
-          :schema $ quote $ Fn (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn (-> Unit) (:features :io :js-ffi :state)
         'render-app! $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn render-app! (hydrate?)
             memo/with-memo-frame $ fn () $ let
@@ -165,7 +165,7 @@
                 tree $ comp-container @*reel dispatch-control!
               if hydrate? (realize-ssr! target tree dispatch-op!) (render! target tree dispatch-op!)
           :examples $ []
-          :schema $ quote $ Fn Bool (-> Unit) (:features :js-ffi)
+          :schema $ quote $ Fn Bool (-> Unit) (:features :js-ffi :state)
         'ssr? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn ssr? ()
             .some? $ browser/query-selector |meta.respo-ssr
