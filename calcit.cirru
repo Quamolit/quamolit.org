@@ -61,7 +61,7 @@
           :schema $ quote $ Fn (reel.typed/State schema/Op schema/Store)
             Fn reel.typed/Control $ -> Unit
             -> respo.schema/Component
-            :features :js-ffi
+            :features :js-ffi :state
         'projects $ %{} 'CodeEntry (:doc |)
           :code $ quote $ def projects
             []
@@ -162,10 +162,10 @@
           :code $ quote $ defn render-app! (hydrate?)
             memo/with-memo-frame $ fn () $ let
                 target $ mount-target
-                tree $ comp-container @*reel dispatch-control!
+                tree $ comp-container @*reel $ fn (op) (dispatch-control! op)
               if hydrate? (realize-ssr! target tree dispatch-op!) (render! target tree dispatch-op!)
           :examples $ []
-          :schema $ quote $ Fn Bool (-> Unit) (:features :js-ffi :state)
+          :schema $ quote $ Fn Bool (-> Unit) (:features :io :js-ffi :state)
         'ssr? $ %{} 'CodeEntry (:doc |)
           :code $ quote $ defn ssr? ()
             .some? $ browser/query-selector |meta.respo-ssr
