@@ -3,7 +3,7 @@ Quamolit Home
 
 ### 使用者影响
 
-使用正式 Calcit 和 `@calcit/procs` 0.44.0。请重新安装依赖并构建。内部状态树使用递归 `StateValue` union，保留 String 正文、Tag 游标列表和嵌套 Map 的原数据布局。已发布依赖为 Reel 0.11.5、UI 0.15.7、Respo 0.19.13、JS-FFI 0.2.19，传递 Router 0.12.11。
+使用正式 Calcit 和 `@calcit/procs` 0.45.1。请重新安装依赖并构建。内部状态树使用递归 `StateValue` union，保留 String 正文、Tag 游标列表和嵌套 Map 的原数据布局。已发布依赖为 Reel 0.11.9、UI 0.16.5、Respo 0.19.18、JS-FFI 0.2.24，传递 Router 0.12.17。
 
 七个项目及其 Demo 链接、280px Logo、SSR 路径、Reel 面板和原存档格式继续沿用。渲染回调使用名义 `Op`，内部通过 `Op | Reel.Control` 区分业务更新和历史控制，Reel 面板和快捷键使用独立的具名 Control 回调。
 
